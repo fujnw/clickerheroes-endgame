@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    
+    <script src="js/main.js"></script>
+    <script src="js/heroes.js"></script>
+    
+    <title>Clicker Heroes End Game Progression Calculator</title>
+    
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3 class="text-center">Clicker Heroes End Game Progression Calculator</h3>
+                <h6 class="text-center">Game Version: 1.0e11. Made by <a href="https://www.reddit.com/user/qubit64/">/u/qubit64</a></h6>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <p>Implements 
+                            <a href="https://www.reddit.com/r/ClickerHeroes/comments/7jpdmw/end_game_zone_200k_progression/">my math results</a>. 
+                            For feedback on this tool, please 
+                            <a href="https://www.reddit.com/r/ClickerHeroes/comments/7m5jnd/end_game_zone_200k_progression_calculator">click here</a>. 
+                            <br>Assumes you can at least gild to Xavira and reach zone 200K.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">  
+                <div class="card border-primary">
+                    <div class="card-body">
+                        
+                        <div class="row font-weight-bold">
+                            <div class="col-2">
+                                <label for="inputAS">AS:</label>
+                            </div>
+                            <div class="col-4">
+                                <input class="form-control" placeholder="Ancient Souls" id="inputAS">
+                            </div>
+                            <div class="col-2">
+                                <label for="inputLgHS" class="pr-2">LgHS:</label>
+                            </div>
+                            <div class="col-4">
+                                <input class="form-control" placeholder="Log10 Hero Souls" id="inputLgHS">
+                            </div>
+                        </div>
+                        <div class="row pt-2 font-weight-bold">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-primary btn-block" id="calc" onclick="calculateProgression()">Calculate</button>
+                            </div>
+                            <div class="col-2">
+                                <label for="outputTP" class="pr-2">TP:</label>
+                            </div>
+                            <div class="col-4">
+                                <input class="form-control" id="outputTP" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h5 id="inputWarning" class="text-danger"></h5>
+            
+        <div class="row">
+            <div class="col">
+                <table class="table table-sm table-hover text-center" id="progressTbl">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Asc#</th>
+                            <th>LgHS</th>
+                            <th>Hero</th>
+                            <th>Zone</th>
+                            <th>HeroLevel</th>
+                            <th>+LgHS</th>
+                            <th>Zone (TLMax)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
