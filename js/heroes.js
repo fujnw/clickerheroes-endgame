@@ -27,7 +27,7 @@ var HERO_UPGRADES = [
     {'name': 'Yachiyl4', 'reqlevel': 665000, 'dps': 110484},
     {'name': 'Yachiyl5', 'reqlevel': 846000, 'dps': 113682},
     {'name': 'Yachiyl6', 'reqlevel': 1032500, 'dps': 116980},
-    {'name': 'Rose0', 'reqlevel': 0, 'dps': 148593.0},
+    {'name': 'Rose0', 'reqlevel': 9700, 'dps': 148593.0},
     {'name': 'Sophia0', 'reqlevel': 0, 'dps': 158831.75},
     {'name': 'Blanche0', 'reqlevel': 0, 'dps': 178104.5},
     {'name': 'Dorothy0', 'reqlevel': 0, 'dps': 199738.5},
