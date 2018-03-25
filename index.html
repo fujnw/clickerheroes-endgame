@@ -21,7 +21,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h3 class="text-center">Clicker Heroes End Game Progression Calculator</h3>
+                <h3 class="text-center">Clicker Heroes Mid/End Game Progression</h3>
                 <h6 class="text-center">Game Version: 1.0e11. Made by <a href="https://www.reddit.com/user/qubit64/">/u/qubit64</a></h6>
             </div>
         </div>
@@ -30,10 +30,11 @@
                 <div class="card border-primary">
                     <div class="card-body">
                         <p>Implements 
-                            <a href="https://www.reddit.com/r/ClickerHeroes/comments/7jpdmw/end_game_zone_200k_progression/">my math results</a>. 
+                            <a href="https://www.reddit.com/r/ClickerHeroes/comments/7jpdmw/end_game_zone_200k_progression/">my math results</a> with mid-game extensions. 
                             For feedback on this tool, please 
                             <a href="https://www.reddit.com/r/ClickerHeroes/comments/7m5jnd/end_game_zone_200k_progression_calculator">click here</a>. 
-                            <br>Assumes you can at least gild to Xavira and reach zone 200K.
+                            <br>You must have at least 1e100 HS to use this tool.
+                            <br>Results may vary slightly from your experience due to outsider levels and other simplifying assumptions.
                         </p>
                     </div>
                 </div>
@@ -48,7 +49,7 @@
                             <div class="col-sm-6">
                                 <div class="row align-items-center">
                                     <div class="col-4">
-                                        <label for="inputAS">AS:</label>
+                                        <label for="inputAS" data-toggle="tooltip" title="For TP calculation only">AS:</label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" placeholder="Ancient Souls" id="inputAS">
@@ -58,7 +59,8 @@
                             <div class="col-sm-6">
                                 <div class="row align-items-center">
                                     <div class="col-4">
-                                        <label for="inputLgHS" class="pr-2">LgHS:</label>
+                                        <label for="inputLgHS" data-toggle="tooltip" 
+                                               title="log10 HS. It's the number after the 'e' in scientific notation">LgHS:</label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" placeholder="Log10 Hero Souls" id="inputLgHS">
@@ -73,7 +75,7 @@
                             <div class="col-sm-6">
                                 <div class="row align-items-center">
                                     <div class="col-4">
-                                        <label for="outputTP" class="pr-2">TP:</label>
+                                        <label for="outputTP">TP:</label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" id="outputTP" disabled>

@@ -1,4 +1,10 @@
 var HERO_UPGRADES = [
+    {'name': 'Tsuchi', 'reqlevel': 0, 'dps': 426.4},
+    {'name': 'Skogur', 'reqlevel': 0, 'dps': 847.4},
+    {'name': 'Moeru', 'reqlevel': 0, 'dps': 1680},
+    {'name': 'Zilar', 'reqlevel': 0, 'dps': 3334.9},
+    {'name': 'Madzi', 'reqlevel': 0, 'dps': 6632.4},
+    
     {'name': 'Xavira0', 'reqlevel': 0, 'dps': 11681},
     {'name': 'Xavira1', 'reqlevel': 150000, 'dps': 12304},
     {'name': 'Xavira2', 'reqlevel': 185000, 'dps': 12952},
@@ -27,6 +33,7 @@ var HERO_UPGRADES = [
     {'name': 'Yachiyl4', 'reqlevel': 665000, 'dps': 110484},
     {'name': 'Yachiyl5', 'reqlevel': 846000, 'dps': 113682},
     {'name': 'Yachiyl6', 'reqlevel': 1032500, 'dps': 116980},
+    
     {'name': 'Rose0', 'reqlevel': 9700, 'dps': 148593.0},
     {'name': 'Sophia0', 'reqlevel': 0, 'dps': 158831.75},
     {'name': 'Blanche0', 'reqlevel': 0, 'dps': 178104.5},
@@ -54,11 +61,18 @@ var HERO_UPGRADES = [
 ];
 
 var HEROES = {
+    'Tsuchi': {'lv1cost': 490, 'costScale': 1.07, 'damageScale': 4},
+    'Skogur': {'lv1cost': 990, 'costScale': 1.07, 'damageScale': 4},
+    'Moeru': {'lv1cost': 1990, 'costScale': 1.07, 'damageScale': 4},
+    'Zilar': {'lv1cost': 3990, 'costScale': 1.07, 'damageScale': 4},
+    'Madzi': {'lv1cost': 7990, 'costScale': 1.07, 'damageScale': 4},
+    
     'Xavira': {'lv1cost': 13990, 'costScale': 1.07, 'damageScale': 4.5},
     'Cadu': {'lv1cost': 25490, 'costScale': 1.07, 'damageScale': 4.5},
     'Ceus': {'lv1cost': 25490, 'costScale': 1.07, 'damageScale': 4.5},
     'Maw': {'lv1cost': 45490, 'costScale': 1.07, 'damageScale': 4.5},
     'Yachiyl': {'lv1cost': 71990, 'costScale': 1.07, 'damageScale': 4.5},
+    
     'Rose': {'lv1cost': 107990, 'costScale': 1.22, 'damageScale': 1000},
     'Sophia': {'lv1cost': 114490, 'costScale': 1.22, 'damageScale': 1000},
     'Blanche': {'lv1cost': 127490, 'costScale': 1.22, 'damageScale': 1000},
@@ -67,6 +81,9 @@ var HEROES = {
 
 function getHeroAttr(huid, attr) {
     var hu = HERO_UPGRADES[huid]["name"];
+    if(hu in HEROES) {
+        return HEROES[hu][attr];
+    }
     var hero = hu.slice(0, hu.length - 1);
     return HEROES[hero][attr];
 }

@@ -1,4 +1,6 @@
-var HP_SCALE = 1.545;
+var LG_HP_500 = 1 + Math.log10(1.55) * 139 + Math.log10(1.145) * 360;
+var HP_SCALE_500 = 1.145;
+var HP_SCALE_200K = 1.545;
 var GOLD_SCALE = 1.15;
 
 function calculateProgression() {    
@@ -8,8 +10,8 @@ function calculateProgression() {
     var errMsg = "";
     if (isNaN(as) || isNaN(lghs)) {
         errMsg = "Please enter inputs";
-    } else if (lghs < 3650) {
-        errMsg = "LgHS needs to be >=3650 to go past zone 200K";
+    } else if (lghs < 100) {
+        errMsg = "Requires lgHS >= 100";
     }
     
     if (errMsg.length > 0) {
@@ -28,6 +30,8 @@ function calculateProgression() {
     var startTL = 0;
     var lghsStart = lghs;
     var hlevel, lghsEnd;
+    
+    var t0 = performance.now();
     
     for (i = 0; i < 250; i++) {
         huid = heroReached(lghsStart, start);
@@ -50,14 +54,16 @@ function calculateProgression() {
             zone.toFixed(0),
             hlevel.toFixed(0),
             lghsChange.toFixed(2),
-            zoneTL < 200000 ? "<200K" : zoneTL.toFixed(0)
+            zoneTL < 10000 ? "<10K" : zoneTL.toFixed(0)
         ])
         lghsStart += lghsChange;
         start = huid;
         startTL = huidTL;
     }
+    var t1 = performance.now();
+    console.log(t1 - t0);
     
-    $("#progressTbl tbody").html(dataArrayToHTML(data));    
+    $("#progressTbl tbody").html(dataArrayToHTML(data));
 }
 
 function heroReached(lgHS, start=0, active=true) {
@@ -72,7 +78,6 @@ function heroReached(lgHS, start=0, active=true) {
             gold < heroUpgradeBaseCost(i + 1)) {
             break;
         }
-        console.log(zone, gold, HERO_UPGRADES[i]['name']);
     }
     return i;
 }
@@ -80,11 +85,37 @@ function heroReached(lgHS, start=0, active=true) {
 function zoneReached(lgHS, i, active=true) {
     let R = Math.log10(getHeroAttr(i, "damageScale")) / 
         Math.log10(getHeroAttr(i, "costScale")) / 25;
-    let efficiency = HERO_UPGRADES[i]['dps'] - R * getHeroAttr(i, "lv1cost");
-    let M = 1 / (Math.log10(HP_SCALE) - R * Math.log10(GOLD_SCALE));
-    let zone = M * 
-        (efficiency + (2.4 + (active * 0.5) + 1.5 * R) * lgHS 
-         + 12377 + 21.12 * R);
+    let lgDmgMultPerZone = Math.log10(GOLD_SCALE) * R;
+    let efficiency = HERO_UPGRADES[i]['dps'] - 
+        R * (getHeroAttr(i, "lv1cost") + 175 * Math.log10(getHeroAttr(i, "costScale")));
+    
+    let RHS = (efficiency + (2.4 + (active * 0.5) + 1.5 * R) * lgHS 
+         + 1.86 - 2 + 21.12 * R);   // Minus 2 to account for boss HP
+    
+    let lghp0 = LG_HP_500;
+    
+    for(j = 1; j < 400; j++) {
+        // Loop through each of the 400 hpscale breakpoints
+        let hpscale = HP_SCALE_500 + 0.001 * j;
+        lghp1 = lghp0 + 500 * Math.log10(hpscale);
+        let z0 = j * 500;
+        let z1 = z0 + 500;
+        
+        if(lghp0 - lgDmgMultPerZone * z0 > RHS) {
+            // Cannot advance past the first breakpoint (zone 500)
+            return -1;
+        }
+        if(lghp0 - lgDmgMultPerZone * z0 <= RHS && lghp1 - lgDmgMultPerZone * z1 > RHS) {
+            // In the middle of two breakpoints. Solve linear equation.
+            let M = 1 / (Math.log10(hpscale) - lgDmgMultPerZone);
+            let zone = M * (RHS - lghp0 + z0 * Math.log10(hpscale));
+            return zone;
+        }
+        lghp0 = lghp1;
+    }
+    
+    let M = 1 / (Math.log10(HP_SCALE_200K) - lgDmgMultPerZone);
+    let zone = M * (RHS - 25409 + Math.log10(HP_SCALE_200K) * 2e5);
     return zone;
 }
 
