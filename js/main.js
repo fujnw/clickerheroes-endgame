@@ -1,7 +1,26 @@
-var LG_HP_500 = 1 + Math.log10(1.55) * 139 + Math.log10(1.145) * 360;
-var HP_SCALE_500 = 1.145;
-var HP_SCALE_200K = 1.545;
 var GOLD_SCALE = 1.15;
+var HP_SCALE;   // 2xn array. First row is zones. Second row is hpscales
+
+function prepareHPScale() {
+    HP_SCALE = [[1, 140], [1.55, 1.145]];
+    for (i=1; i<=400; i++) {
+        HP_SCALE[0].push(500 * i);
+        HP_SCALE[1].push(1.145 + 0.001 * i);
+    }
+}
+
+var HERO_TABLE_COLUMNS = {
+    'name': 0,
+    'lv1cost': 1,
+    'costScale': 2,
+    'damageScale': 3,
+    'reqlevel': 4,
+    'dps': 5
+}
+
+function getHeroAttr(hnum, attr) {
+    return HEROES[hnum][HERO_TABLE_COLUMNS[attr]];
+}
 
 function calculateProgression() {    
     var as = parseFloat($("#inputAS").val());
@@ -21,6 +40,8 @@ function calculateProgression() {
     } else {
         $("#inputWarning").html("");
     }
+    
+    prepareHPScale();
 
     var tp = 0.25 - 0.23 * Math.exp(-0.0003 * as);
     $("#outputTP").val(tp.toFixed(6));
@@ -34,31 +55,31 @@ function calculateProgression() {
     var t0 = performance.now();
     
     for (i = 0; i < 250; i++) {
-        huid = heroReached(lghsStart, start);
-        zone = zoneReached(lghsStart, huid);
+        hnum = heroReached(lghsStart, start);
+        zone = zoneReached(lghsStart, hnum);
         hlevel = (zone * Math.log10(GOLD_SCALE) + 1.5 * lghsStart + 21 
-            - getHeroAttr(huid, "lv1cost")) / 
-            Math.log10(getHeroAttr(huid, "costScale"));
+            - getHeroAttr(hnum, "lv1cost")) / 
+            Math.log10(getHeroAttr(hnum, "costScale"));
         lghsEnd = (zone / 5 - 20) * Math.log10(1 + tp) 
             + Math.log10(20 * 10000 * (1 + tp) / tp);
         lghsChange = lghsEnd - lghsStart > 50 ? lghsEnd - lghsStart 
             : Math.log10(1 + Math.pow(10, lghsEnd - lghsStart));
         
-        huidTL = heroReached(lghsStart, startTL, active=false);
-        zoneTL = zoneReached(lghsStart, huidTL, active=false);
+        hnumTL = heroReached(lghsStart, startTL, active=false);
+        zoneTL = zoneReached(lghsStart, hnumTL, active=false);
         
         data.push([
             i,
             lghsStart.toFixed(2),
-            HERO_UPGRADES[huid]["name"],
+            getHeroAttr(hnum, "name"),
             zone.toFixed(0),
             hlevel.toFixed(0),
             lghsChange.toFixed(2),
             zoneTL < 10000 ? "<10K" : zoneTL.toFixed(0)
         ])
         lghsStart += lghsChange;
-        start = huid;
-        startTL = huidTL;
+        start = hnum;
+        startTL = hnumTL;
     }
     var t1 = performance.now();
     console.log(t1 - t0);
@@ -71,10 +92,10 @@ function heroReached(lgHS, start=0, active=true) {
     // from the previous ascension, to save execution time
     var zone, gold;
     var i = start;
-    for (; i < HERO_UPGRADES.length; i++) {
+    for (; i < HEROES.length; i++) {
         zone = zoneReached(lgHS, i, active);
         gold = zone * Math.log10(GOLD_SCALE) + 1.5 * lgHS + 21;
-        if (i == HERO_UPGRADES.length - 1 || 
+        if (i == HEROES.length - 1 || 
             gold < heroUpgradeBaseCost(i + 1)) {
             break;
         }
@@ -86,23 +107,24 @@ function zoneReached(lgHS, i, active=true) {
     let R = Math.log10(getHeroAttr(i, "damageScale")) / 
         Math.log10(getHeroAttr(i, "costScale")) / 25;
     let lgDmgMultPerZone = Math.log10(GOLD_SCALE) * R;
-    let efficiency = HERO_UPGRADES[i]['dps'] - 
+    let efficiency = getHeroAttr(i, 'dps') - 
         R * (getHeroAttr(i, "lv1cost") + 175 * Math.log10(getHeroAttr(i, "costScale")));
     
     let RHS = (efficiency + (2.4 + (active * 0.5) + 1.5 * R) * lgHS 
          + 1.86 - 2 + 21.12 * R);   // Minus 2 to account for boss HP
     
-    let lghp0 = LG_HP_500;
-    
-    for(j = 1; j < 400; j++) {
-        // Loop through each of the 400 hpscale breakpoints
-        let hpscale = HP_SCALE_500 + 0.001 * j;
-        lghp1 = lghp0 + 500 * Math.log10(hpscale);
-        let z0 = j * 500;
-        let z1 = z0 + 500;
+    let lghp0 = 1;  // lgHP at zone 1
+    let nbp = HP_SCALE[0].length;
+    for(j = 0; j < nbp - 1; j++) {
+        // Loop through every HP breakpoint
+        let hpscale = HP_SCALE[1][j];
+        let lghp1 = lghp0 + (HP_SCALE[0][j + 1] - HP_SCALE[0][j]) * 
+            Math.log10(hpscale);
+        let z0 = HP_SCALE[0][j];
+        let z1 = HP_SCALE[0][j + 1];
         
         if(lghp0 - lgDmgMultPerZone * z0 > RHS) {
-            // Cannot advance past the first breakpoint (zone 500)
+            // Cannot advance past the first breakpoint
             return -1;
         }
         if(lghp0 - lgDmgMultPerZone * z0 <= RHS && lghp1 - lgDmgMultPerZone * z1 > RHS) {
@@ -114,15 +136,15 @@ function zoneReached(lgHS, i, active=true) {
         lghp0 = lghp1;
     }
     
-    let M = 1 / (Math.log10(HP_SCALE_200K) - lgDmgMultPerZone);
-    let zone = M * (RHS - 25409 + Math.log10(HP_SCALE_200K) * 2e5);
+    let M = 1 / (Math.log10(HP_SCALE[1][nbp - 1]) - lgDmgMultPerZone);
+    let zone = M * (RHS - lghp0 + Math.log10(HP_SCALE[1][nbp - 1]) * HP_SCALE[0][nbp - 1]);
     return zone;
 }
 
-function heroUpgradeBaseCost(huid) {
-    let level = HERO_UPGRADES[huid]["reqlevel"];
-    return getHeroAttr(huid, "lv1cost") + 
-        Math.log10(getHeroAttr(huid, "costScale")) * level;
+function heroUpgradeBaseCost(hnum) {
+    let level = getHeroAttr(hnum, "reqlevel");
+    return getHeroAttr(hnum, "lv1cost") + 
+        Math.log10(getHeroAttr(hnum, "costScale")) * level;
 }
 
 function dataArrayToHTML(data) {
