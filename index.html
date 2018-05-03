@@ -12,8 +12,9 @@
     
     <script src="js/main.js"></script>
     <script src="js/heroes.js"></script>
+    <script src="js/root2.js"></script>
     
-    <title>Clicker Heroes End Game Progression Calculator</title>
+    <title>Clicker Heroes Mid/End Game Progression Calculator</title>
     
 </head>
 
@@ -22,7 +23,7 @@
         <div class="row">
             <div class="col">
                 <h3 class="text-center">Clicker Heroes Mid/End Game Progression</h3>
-                <h6 class="text-center">Game Version: 1.0e11. Made by <a href="https://www.reddit.com/user/qubit64/">/u/qubit64</a></h6>
+                <h6 class="text-center">Game Version: 1.0e11 / Root2. Made by <a href="https://www.reddit.com/user/qubit64/">/u/qubit64</a></h6>
             </div>
         </div>
         <div class="row pb-2">
@@ -45,7 +46,21 @@
                 <div class="card border-primary">
                     <div class="card-body">
                         
-                        <div class="row">
+                        <div class="row text-center">
+                            <div class="col">
+                                <span class="align-top">Game Version: &nbsp;&nbsp;</span>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="inlineRadioOptions" checked="checked" id="gameVanilla">
+                                  <label class="form-check-label" for="gameVanilla">1.0e11</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="gameRoot2">
+                                  <label class="form-check-label" for="gameRoot2">Root2</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row pt-2">
                             <div class="col-sm-6">
                                 <div class="row align-items-center">
                                     <div class="col-4">
@@ -70,7 +85,11 @@
                         </div>
                         <div class="row pt-2">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-primary btn-block" id="calc" onclick="calculateProgression()">Calculate</button>
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary btn-block" id="calc" onclick="calculateProgression()">Calculate</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="row align-items-center">
