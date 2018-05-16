@@ -134,7 +134,7 @@ function zoneReached(lgHS, i, active=true) {
         R * (getHeroAttr(i, "lv1cost") + 175 * Math.log10(getHeroAttr(i, "costScale")));
 
     let startingGold = 21.12 + 1.5 * lgHS;
-    startingGold += ROOT2 * (i >= 48) * 98; // BomberMax global gold boost on Root2
+    startingGold += ROOT2 * (i >= 47) * 98; // BomberMax global gold boost on Root2
     
     let RHS = efficiency + (2.4 + active * 0.5) * lgHS 
          + 1.86 - 2 + startingGold * R;   // Minus 2 to account for boss HP    
