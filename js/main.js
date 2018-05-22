@@ -174,8 +174,10 @@ function zoneReached(lgHS, i, active=true) {
 
 function heroUpgradeBaseCost(hnum) {
     let level = getHeroAttr(hnum, "reqlevel");
-    return getHeroAttr(hnum, "lv1cost") + 
-        Math.log10(getHeroAttr(hnum, "costScale")) * level;
+    // Force Yachiyl7 on Root2 to use Yachiyl6's cost scaling
+    let costScale = getHeroAttr(
+        hnum - (ROOT2 && hnum == HEROES.length - 1), "costScale");
+    return getHeroAttr(hnum, "lv1cost") + Math.log10(costScale) * level;
 }
 
 function dataArrayToHTML(data) {
